@@ -84,7 +84,7 @@ function Creator() {
                         </div>
                             <div className='py-8'>
                                 <label className='pr-4'>
-                                    Password
+                                    Password*
                                 </label>
                                 <div className='flex-row w-full relative'>
                                     <input
@@ -106,7 +106,7 @@ function Creator() {
                             </div>
                             <div className='py-8'>
                                 <label className='pr-4'>
-                                    Confirm Password
+                                    Confirm Password*
                                 </label>
                                 <div className='flex-row w-full relative'>
                                     <input
