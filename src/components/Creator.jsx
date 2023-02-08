@@ -147,10 +147,3 @@ function Creator() {
 }
 
 export default Creator;
-
-// For account creation: 
-// 
-// 
-//  Configure SWAL to fire upon successful submission
-//
-//  
