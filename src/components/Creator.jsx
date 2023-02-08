@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { BiShow } from 'react-icons/bi'
-import { useForm } from "react-hook-form";
 
 
 const current = new Date().toISOString().split("T")[0] //split method will split the string to divide the date from the included tine, [0] selects for the first element (zeroth indexed), we are after the date not the time so we split it to make it useful
@@ -38,7 +37,19 @@ function Creator() {
             .then((res) => {
                 console.log(res.user)
             })
-            .catch(error => setError(error.message))
+            .catch((error) => {
+                switch (error.code) {
+                  case 'auth/weak-password':
+                    setError('Password should be at least 6 characters'); //updates firebase error message so that it displays more user friendly message
+                    break;
+                  case 'auth/invalid-email':
+                    setError('Invalid email address'); //updates firebase message in same way but with email
+                    break;
+                  default:
+                    setError('An error occurred, please try again later'); // If an error was to occur in the firebaseAPI this message will be used
+                    break;
+                }
+              });
         }
 
         //Clears out the fields of the form after submission
@@ -46,12 +57,10 @@ function Creator() {
         setPassword('');
         setConfirmPassword('');
         setDate('');
-
     }
 
-
     return (
-        <div className=' bg-slate-200 rounded-md max-w-sm mx-auto'>
+        <div className=' bg-slate-200 rounded-md max-w-sm mx-auto font-robotoSlab'>
             <h1 className='text-xl text-center py-3'>Account Creation</h1>
             <p className='text-center'>To create an account please input the following:</p>
             <div className=''>
@@ -62,17 +71,18 @@ function Creator() {
                                 Email*
                             </label>
                             <input 
-                                type="text" 
+                                type="email"
+                                required
                                 name="email" 
                                 className='w-full rounded-md p-2'
                                 value={email}
-                                required
                                 onChange={event => setEmail(event.target.value)}
                             />
+                            
                         </div>
                             <div className='py-8'>
                                 <label className='pr-4'>
-                                    Password*
+                                    Password
                                 </label>
                                 <div className='flex-row w-full relative'>
                                     <input
@@ -83,6 +93,7 @@ function Creator() {
                                         required
                                         onChange={event => setPassword(event.target.value)}
                                     />
+                                    
                                     <div>
                                         <div className='absolute right-3 top-3 cursor-pointer hover:text-kitsuneBlue2 text-xl'
                                             onClick={() => setShowPassword(!showPassword)}>
@@ -93,7 +104,7 @@ function Creator() {
                             </div>
                             <div className='py-8'>
                                 <label className='pr-4'>
-                                    Confirm Password*
+                                    Confirm Password
                                 </label>
                                 <div className='flex-row w-full relative'>
                                     <input
@@ -127,6 +138,7 @@ function Creator() {
                         </div>
                     </div>
                 </form>
+                {error && <p className="text-center text-red-600 py-4 px-6 text-md">{error}</p>}
             </div>
         </div>
     );
@@ -135,10 +147,7 @@ function Creator() {
 export default Creator;
 
 // For account creation: 
-//  
 // 
-//  need validation (can use react-hook-form serverside validation)
-//      npm package installed, just need to set up the validation states
 // 
 //  Configure SWAL to fire upon successful submission
 //
